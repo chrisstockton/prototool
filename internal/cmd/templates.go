@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,7 @@ var (
 		BindFlags: func(flagSet *pflag.FlagSet, flags *flags) {
 			flags.bindCachePath(flagSet)
 			flags.bindConfigData(flagSet)
+			flags.bindDescriptorSetIn(flagSet)
 			flags.bindDescriptorSetPath(flagSet)
 			flags.bindGitBranch(flagSet)
 			flags.bindJSON(flagSet)
@@ -91,6 +92,7 @@ var (
 		BindFlags: func(flagSet *pflag.FlagSet, flags *flags) {
 			flags.bindCachePath(flagSet)
 			flags.bindConfigData(flagSet)
+			flags.bindDescriptorSetIn(flagSet)
 			flags.bindErrorFormat(flagSet)
 			flags.bindJSON(flagSet)
 			flags.bindProtocURL(flagSet)
@@ -156,6 +158,7 @@ Artifacts are downloaded to the following directories based on flags and environ
 		BindFlags: func(flagSet *pflag.FlagSet, flags *flags) {
 			flags.bindCachePath(flagSet)
 			flags.bindConfigData(flagSet)
+			flags.bindDescriptorSetIn(flagSet)
 			flags.bindDryRun(flagSet)
 			flags.bindErrorFormat(flagSet)
 			flags.bindJSON(flagSet)
@@ -247,6 +250,7 @@ If Vim integration is set up, files will be generated when you open a new Protob
 		BindFlags: func(flagSet *pflag.FlagSet, flags *flags) {
 			flags.bindCachePath(flagSet)
 			flags.bindConfigData(flagSet)
+			flags.bindDescriptorSetIn(flagSet)
 			flags.bindErrorFormat(flagSet)
 			flags.bindIncludeImports(flagSet)
 			flags.bindIncludeSourceInfo(flagSet)
@@ -665,6 +669,10 @@ func getRunner(develMode bool, stdin io.Reader, stdout io.Writer, stderr io.Writ
 			exec.RunnerWithDevelMode(),
 		)
 	}
+	if flags.descriptorSetIn != "" {
+		runnerOptions = append(runnerOptions, exec.RunnerWithDescriptorSetIn(flags.descriptorSetIn))
+	}
+
 	workDirPath, err := os.Getwd()
 	if err != nil {
 		return nil, err

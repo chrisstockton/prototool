@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -148,4 +148,12 @@ func RunnerWithWalkTimeout(walkTimeout time.Duration) RunnerOption {
 // input and output generally refer to stdin and stdout.
 func NewRunner(workDirPath string, input io.Reader, output io.Writer, options ...RunnerOption) Runner {
 	return newRunner(workDirPath, input, output, options...)
+}
+
+// RunnerWithDescriptorSetIn adds a descriptor set in parameter to the runner
+// that will be passed to protoc as --descriptor_set_in.
+func RunnerWithDescriptorSetIn(descriptorSetIn string) RunnerOption {
+	return func(runner *runner) {
+		runner.descriptorSetIn = descriptorSetIn
+	}
 }

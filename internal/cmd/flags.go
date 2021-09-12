@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ type flags struct {
 	connectTimeout    string
 	data              string
 	debug             bool
+	descriptorSetIn   string
 	descriptorSetPath string
 	details           bool
 	diffLintGroups    string
@@ -102,8 +103,12 @@ func (f *flags) bindDebug(flagSet *pflag.FlagSet) {
 	flagSet.BoolVar(&f.debug, "debug", false, "Run in debug mode, which will print out debug logging.")
 }
 
+func (f *flags) bindDescriptorSetIn(flagSet *pflag.FlagSet) {
+	flagSet.StringVarP(&f.descriptorSetIn, "descriptor-set-in", "f", "", "A colon-delimited list of FILES each containing a FileDescriptorSet (aprotocol buffer defined in descriptor.proto) passed to protoc using --descriptor-set-in.")
+}
+
 func (f *flags) bindDescriptorSetPath(flagSet *pflag.FlagSet) {
-	flagSet.StringVarP(&f.descriptorSetPath, "descriptor-set-path", "f", "", "The path to the file containing a serialized FileDescriptorSet to check against.\nFileDescriptorSet files can be produced using the descriptor-set sub-command.\nThe default behavior is to check against a git branch or tag. This cannot be used with the --git-branch flag.")
+	flagSet.StringVarP(&f.descriptorSetPath, "descriptor-set-path", "", "", "The path to the file containing a serialized FileDescriptorSet to check against.\nFileDescriptorSet files can be produced using the descriptor-set sub-command.\nThe default behavior is to check against a git branch or tag. This cannot be used with the --git-branch flag.")
 }
 
 func (f *flags) bindDetails(flagSet *pflag.FlagSet) {

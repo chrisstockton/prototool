@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -161,6 +161,8 @@ type CompileConfig struct {
 	IncludeWellKnownTypes bool
 	// AllowUnusedImports says to not error when an import is not used.
 	AllowUnusedImports bool
+	// DescriptorSetIn is a colon-separated list of descritor sets to include with --descriptor_set_in to protoc.
+	DescriptorSetIn string
 }
 
 // CreateConfig is the create config.
@@ -297,6 +299,7 @@ type ExternalConfig struct {
 		AllowUnusedImports bool     `json:"allow_unused_imports,omitempty" yaml:"allow_unused_imports,omitempty"`
 		Version            string   `json:"version,omitempty" yaml:"version,omitempty"`
 		Includes           []string `json:"includes,omitempty" yaml:"includes,omitempty"`
+		DescriptorSetIn    string   `json:"descriptor_set_in,omitempty" yaml:"descriptor_set_in,omitempty"`
 	} `json:"protoc,omitempty" yaml:"protoc,omitempty"`
 	Create struct {
 		Packages []struct {

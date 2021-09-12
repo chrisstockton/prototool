@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -70,16 +70,17 @@ type runner struct {
 	input       io.Reader
 	output      io.Writer
 
-	logger        *zap.Logger
-	develMode     bool
-	cachePath     string
-	configData    string
-	protocBinPath string
-	protocWKTPath string
-	protocURL     string
-	errorFormat   string
-	json          bool
-	walkTimeout   time.Duration
+	logger          *zap.Logger
+	develMode       bool
+	cachePath       string
+	configData      string
+	descriptorSetIn string
+	protocBinPath   string
+	protocWKTPath   string
+	protocURL       string
+	errorFormat     string
+	json            bool
+	walkTimeout     time.Duration
 }
 
 func newRunner(workDirPath string, input io.Reader, output io.Writer, options ...RunnerOption) *runner {
@@ -285,6 +286,10 @@ func (r *runner) compileFullControl(includeImports bool, includeSourceInfo bool,
 }
 
 func (r *runner) doCompile(compiler protoc.Compiler, meta *meta) (protoc.FileDescriptorSets, error) {
+	if r.descriptorSetIn != "" {
+		meta.ProtoSet.Config.Compile.DescriptorSetIn = r.descriptorSetIn
+	}
+
 	compileResult, err := compiler.Compile(meta.ProtoSet)
 	if err != nil {
 		return nil, err

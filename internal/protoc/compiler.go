@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Uber Technologies, Inc.
+// Copyright (c) 2021 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -375,9 +375,17 @@ func (c *compiler) getCmdMetas(protoSet *file.ProtoSet) (cmdMetas []*cmdMeta, re
 					iArgs = append(iArgs, "--include_source_info")
 				}
 			}
+
+			// set the descriptor_set_in protoc command-line arg if present
+			if protoSet.Config.Compile.DescriptorSetIn != "" {
+				descriptorSetIn := c.getDescriptorSetIn(configDirPath, protoSet.Config.Compile.DescriptorSetIn)
+				iArgs = append(iArgs, "--descriptor_set_in="+descriptorSetIn)
+			}
+
 			for _, protoFile := range protoFiles {
 				iArgs = append(iArgs, protoFile.Path)
 			}
+
 			cmdMetas = append(cmdMetas, &cmdMeta{
 				execCmd:    exec.Command(protocPath, iArgs...),
 				protoSet:   protoSet,
@@ -405,6 +413,19 @@ func (c *compiler) getCmdMetas(protoSet *file.ProtoSet) (cmdMetas []*cmdMeta, re
 		}
 	}
 	return cmdMetas, nil
+}
+
+func (c *compiler) getDescriptorSetIn(baseDir, descriptorSetIn string) string {
+	descriptors := strings.Split(descriptorSetIn, ":")
+
+	var fqDescriptors []string
+	for _, d := range descriptors {
+		if !strings.HasPrefix(d, baseDir) {
+			d = baseDir + "/" + d
+		}
+		fqDescriptors = append(fqDescriptors, d)
+	}
+	return strings.Join(fqDescriptors, ":")
 }
 
 func (c *compiler) newDownloader(config settings.Config) (Downloader, error) {
